@@ -1,5 +1,6 @@
 package com.khamovniki.vienna.storage.dto;
 
+import java.time.Instant;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -13,4 +14,5 @@ public class PostRequestDto {
 
     private final String message;
     private final Set<String> tags;
+    private final Instant timestamp;
 }

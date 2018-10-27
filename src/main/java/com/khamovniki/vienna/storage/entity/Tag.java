@@ -3,6 +3,7 @@ package com.khamovniki.vienna.storage.entity;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
@@ -24,7 +25,7 @@ public class Tag {
     private String name;
 
     //for the sake of hackathon
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     private Set<User> users;
 }

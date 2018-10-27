@@ -28,5 +28,9 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	implementation('com.h2database:h2')
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+    implementation('com.google.collections:google-collections:1.0-rc2')
+
+    compileOnly('org.projectlombok:lombok:1.18.2')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

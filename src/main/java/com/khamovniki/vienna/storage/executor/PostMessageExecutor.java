@@ -1,4 +1,4 @@
-package com.khamovniki.vienna.storage.scheduler;
+package com.khamovniki.vienna.storage.executor;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -27,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostMessageExecutor {
 
+    private static final String SEND_POST = "/sendPost";
+
     private final PostMessageTaskRepository postMessageTaskRepository;
     private final TagRepository tagRepository;
     private final RestTemplate botRestTemplate;
@@ -34,7 +36,7 @@ public class PostMessageExecutor {
     @Scheduled(fixedRate = 5_000L)
     @Transactional(readOnly = true)
     private void sendScheduled() {
-        List<PostMessageTask> tasks = postMessageTaskRepository.findByTimestampLessThan(Instant.now());
+        List<PostMessageTask> tasks = postMessageTaskRepository.findBySentAndTimestampLessThan(false, Instant.now());
         tasks.forEach(task -> {
             Hibernate.initialize(task.getTags());
             Set<Long> users = task.getTags().stream()
@@ -46,7 +48,8 @@ public class PostMessageExecutor {
                     .message(task.getMessage())
                     .users(users)
                     .build();
-            botRestTemplate.postForEntity("/sendPost", request, ResponseEntity.class);
+            task.setSent(true);
+            botRestTemplate.postForEntity(SEND_POST, request, ResponseEntity.class);
         });
     }
 }

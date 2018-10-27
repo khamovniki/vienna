@@ -25,4 +25,13 @@ public class TagServiceImpl implements TagService {
                 .map(Tag::getName)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    @Transactional
+    public void createTag(String tagName) {
+        Tag tag = Tag.builder()
+                .name(tagName)
+                .build();
+        tagRepository.save(tag);
+    }
 }

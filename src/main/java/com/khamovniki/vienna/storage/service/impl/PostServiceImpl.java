@@ -1,5 +1,7 @@
 package com.khamovniki.vienna.storage.service.impl;
 
+import java.time.Instant;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +21,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void createPost(PostRequestDto request) {
+        Instant requestTimestamp = request.getTimestamp();
+        Instant timestamp = requestTimestamp != null
+                ? requestTimestamp
+                : Instant.now();
         PostMessageTask task = PostMessageTask.builder()
                 .message(request.getMessage())
                 .tags(request.getTags())
-                .timestamp(request.getTimestamp())
+                .timestamp(timestamp)
                 .build();
         postMessageTaskRepository.save(task);
     }

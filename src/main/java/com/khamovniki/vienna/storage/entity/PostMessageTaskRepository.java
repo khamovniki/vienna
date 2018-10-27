@@ -6,5 +6,5 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 public interface PostMessageTaskRepository extends CrudRepository<PostMessageTask, Long> {
-    List<PostMessageTask> findByTimestampLessThan(Instant timestamp);
+    List<PostMessageTask> findBySentAndTimestampLessThan(boolean sent, Instant timestamp);
 }

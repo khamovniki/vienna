@@ -35,4 +35,6 @@ public class PostMessageTask {
     @Convert(converter = StringSetConverter.class)
     private Set<String> tags;
     private Instant timestamp;
+    @Builder.Default
+    private boolean sent = false;
 }

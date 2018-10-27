@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.khamovniki.vienna.storage.dto.TelegramPostRequestDto;
@@ -34,7 +35,7 @@ public class PostMessageExecutor {
     private final RestTemplate botRestTemplate;
 
     @Scheduled(fixedRate = 5_000L)
-    @Transactional(readOnly = true)
+    @Transactional
     private void sendScheduled() {
         List<PostMessageTask> tasks = postMessageTaskRepository.findBySentAndTimestampLessThan(false, Instant.now());
         tasks.forEach(task -> {
@@ -48,8 +49,12 @@ public class PostMessageExecutor {
                     .message(task.getMessage())
                     .users(users)
                     .build();
-            task.setSent(true);
-            botRestTemplate.postForEntity(SEND_POST, request, ResponseEntity.class);
+            try {
+                botRestTemplate.postForEntity(SEND_POST, request, ResponseEntity.class);
+                task.setSent(true);
+                postMessageTaskRepository.save(task);
+            } catch (HttpStatusCodeException ignored) {
+            }
         });
     }
 }

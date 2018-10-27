@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.khamovniki.vienna.storage.dto.PostRequestDto;
 import com.khamovniki.vienna.storage.entity.PostMessageTask;
 import com.khamovniki.vienna.storage.entity.PostMessageTaskRepository;
-import com.khamovniki.vienna.storage.entity.UserRepository;
 import com.khamovniki.vienna.storage.service.PostService;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class PostServiceImpl implements PostService {
 
     private final PostMessageTaskRepository postMessageTaskRepository;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional

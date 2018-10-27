@@ -11,12 +11,12 @@ import com.khamovniki.vienna.storage.service.UserService;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public void createUser(String userId) {
+    public void createUser(long userId) {
 
     }
 
     @Override
-    public Set<String> listUserTags(String userId) {
+    public Set<String> listUserTags(long userId) {
         return null;
     }
 

@@ -9,6 +9,6 @@ import lombok.Data;
 @Builder
 public class TagChangeRequestDto {
 
-    private final String userId;
+    private final long userId;
     private final String tag;
 }

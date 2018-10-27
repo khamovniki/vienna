@@ -20,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/create/{userId}")
-    public void createUser(@PathVariable String userId) {
+    public void createUser(@PathVariable long userId) {
         userService.createUser(userId);
     }
 
     @PostMapping("/{userId}/addTag")
-    public void addTag(@PathVariable String userId,
+    public void addTag(@PathVariable long userId,
             String tag) {
         TagChangeRequestDto request = TagChangeRequestDto.builder()
                 .userId(userId)
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/removeTag")
-    public void removeTag(@PathVariable String userId,
+    public void removeTag(@PathVariable long userId,
             String tag) {
         TagChangeRequestDto request = TagChangeRequestDto.builder()
                 .userId(userId)

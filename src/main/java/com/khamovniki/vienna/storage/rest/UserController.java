@@ -3,9 +3,11 @@ package com.khamovniki.vienna.storage.rest;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +32,8 @@ public class UserController {
         userService.createUser(userId);
     }
 
-    @PostMapping("/{userId}/addTag")
-    public void addTag(@PathVariable long userId,
-            String tag) {
+    @PutMapping("/{userId}/addTag/{tag}")
+    public void addTag(@PathVariable long userId, @PathVariable String tag) {
         TagChangeRequestDto request = TagChangeRequestDto.builder()
                 .userId(userId)
                 .tag(tag)
@@ -45,9 +46,8 @@ public class UserController {
         return userService.listAbsentTags(userId);
     }
 
-    @PostMapping("/{userId}/removeTag")
-    public void removeTag(@PathVariable long userId,
-            String tag) {
+    @DeleteMapping("/{userId}/removeTag/{tag}")
+    public void removeTag(@PathVariable long userId, @PathVariable String tag) {
         TagChangeRequestDto request = TagChangeRequestDto.builder()
                 .userId(userId)
                 .tag(tag)

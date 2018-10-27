@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public Set<String> listTags(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ViennaDataException("User not found"));
-        return user.getTags();
+        return user.listTagsNames();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         Set<String> tags = tagRepository.findAll().stream()
                 .map(Tag::getName)
                 .collect(Collectors.toSet());
-        tags.removeAll(user.getTags());
+        tags.removeAll(user.listTagsNames());
         return tags;
     }
 
@@ -60,28 +60,20 @@ public class UserServiceImpl implements UserService {
     public void addUserTag(TagChangeRequestDto request) {
         long userId = request.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new ViennaDataException("User not found"));
+        Tag tag = tagRepository.findById(request.getTag()).orElseThrow(() -> new ViennaDataException("Tag not found"));
+        Set<Tag> userTags = user.getTags();
 
-        Set<String> userTags = user.getTags();
-        String newTag = request.getTag();
-        validateTag(newTag);
-        userTags.add(newTag);
-        userRepository.save(user.withTags(userTags));
+        userTags.add(tag);
     }
 
     @Override
+    @Transactional
     public void removeUserTag(TagChangeRequestDto request) {
         long userId = request.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new ViennaDataException("User not found"));
+        Tag tag = tagRepository.findById(request.getTag()).orElseThrow(() -> new ViennaDataException("Tag not found"));
 
-        Set<String> userTags = user.getTags();
-
-        String oldTag = request.getTag();
-        validateTag(oldTag);
-        userTags.remove(oldTag);
-        userRepository.save(user.withTags(userTags));
-    }
-
-    private void validateTag(String tag) {
-        tagRepository.findById(tag).orElseThrow(() -> new ViennaDataException("Tag not found"));
+        Set<Tag> userTags = user.getTags();
+        userTags.remove(tag);
     }
 }

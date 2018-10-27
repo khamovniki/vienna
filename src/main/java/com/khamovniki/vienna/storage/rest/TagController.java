@@ -3,6 +3,7 @@ package com.khamovniki.vienna.storage.rest;
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,5 +23,9 @@ public class TagController {
     @GetMapping("/list")
     public Set<String> listTags() {
         return tagService.listTags();
+    }
+
+    @PostMapping("/create/{tagName}")
+    public void createTag() {
     }
 }

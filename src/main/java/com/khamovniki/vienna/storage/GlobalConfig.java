@@ -1,12 +1,16 @@
 package com.khamovniki.vienna.storage;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
+
+import com.khamovniki.vienna.storage.entity.CredentialsRepository;
+import com.khamovniki.vienna.storage.filter.JWTLoginFilter;
 
 @Configuration
 @ComponentScan(basePackageClasses = GlobalConfig.class)
@@ -32,4 +36,15 @@ public class GlobalConfig {
                 .rootUri(BOT_URI)
                 .build();
     }
+
+    @Bean
+    public FilterRegistrationBean<JWTLoginFilter> jwtLoginFilter (CredentialsRepository credentialsRepository) {
+        FilterRegistrationBean<JWTLoginFilter> filterRegistrationBean =
+                new FilterRegistrationBean<>(new JWTLoginFilter(credentialsRepository));
+
+        filterRegistrationBean.addUrlPatterns("/api/post");
+
+        return filterRegistrationBean;
+    }
+
 }

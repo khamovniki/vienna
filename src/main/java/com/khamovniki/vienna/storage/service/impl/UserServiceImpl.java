@@ -1,5 +1,8 @@
 package com.khamovniki.vienna.storage.service.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,5 +78,32 @@ public class UserServiceImpl implements UserService {
 
         Set<Tag> userTags = user.getTags();
         userTags.remove(tag);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<String> recommend(long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ViennaDataException("User not found"));
+        Set<Tag> userTags = user.getTags();
+        int min = userTags.size() / 2;
+        Map<String, Long> tagsMap = userTags.stream()
+                .map(Tag::getUsers)
+                .flatMap(Collection::stream)
+                .distinct()
+                .filter(u -> u.getUserId() != userId)
+                .filter(u -> u.getTags().stream()
+                        .filter(userTags::contains)
+                        .count() >= 2)
+                .map(User::getTags)
+                .flatMap(Collection::stream)
+                .filter(tag -> !userTags.contains(tag))
+                .collect(Collectors.groupingBy(Tag::getName, Collectors.counting()));
+
+        return tagsMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(3)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }

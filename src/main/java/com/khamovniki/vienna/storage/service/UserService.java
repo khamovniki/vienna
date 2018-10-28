@@ -14,4 +14,6 @@ public interface UserService {
     void removeUserTag(TagChangeRequestDto request);
 
     Set<String> listAbsentTags(long userId);
+
+    Set<String> recommend(long userId);
 }

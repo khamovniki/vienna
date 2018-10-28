@@ -24,6 +24,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private static final int MAGIC_DENOMINATOR = 2;
+    private static final int MAGIC_NUMERATOR = 1;
+
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
@@ -86,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public Set<String> recommend(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ViennaDataException("User not found"));
         Set<Tag> userTags = user.getTags();
-        int min = userTags.size() / 2;
+        int min = userTags.size() / MAGIC_DENOMINATOR * MAGIC_NUMERATOR;
         Map<String, Long> tagsMap = userTags.stream()
                 .map(Tag::getUsers)
                 .flatMap(Collection::stream)
@@ -94,7 +97,7 @@ public class UserServiceImpl implements UserService {
                 .filter(u -> u.getUserId() != userId)
                 .filter(u -> u.getTags().stream()
                         .filter(userTags::contains)
-                        .count() >= 2)
+                        .count() >= min)
                 .map(User::getTags)
                 .flatMap(Collection::stream)
                 .filter(tag -> !userTags.contains(tag))

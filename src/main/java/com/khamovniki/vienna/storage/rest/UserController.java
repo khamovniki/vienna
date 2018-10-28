@@ -61,4 +61,9 @@ public class UserController {
         return userService.listTags(userId);
     }
 
+    @GetMapping("/{userId}/recommend")
+    public Set<String> recommend(@PathVariable long userId) {
+        return userService.recommend(userId);
+    }
+
 }
